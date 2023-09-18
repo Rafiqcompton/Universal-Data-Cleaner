@@ -1,0 +1,61 @@
+import numpy as np
+import pandas as pd
+
+class UniversalDataCleaner:
+    def __init__(self):
+        self.data_types = {}
+        self.errors = {}
+        self.cleaning_rules = {}
+
+    def train(self, clean_data, dirty_data):
+        # Identify the different data types in the clean data
+        for column in clean_data.columns:
+            self.data_types[column] = clean_data[column].dtype
+
+        # Identify the different errors in the dirty data
+        for column in dirty_data.columns:
+            for row in dirty_data[column]:
+                self.errors[column] = []
+
+                if row != row:  # NaN value
+                    self.errors[column].append('missing_value')
+                elif not isinstance(row, self.data_types[column]):
+                    self.errors[column].append('type_mismatch')
+                elif isinstance(row, str) and not row.isalnum():
+                    self.errors[column].append('typoglycemia')
+                elif isinstance(row, (float, int)) and row < self.data_types[column].min() or row > self.data_types[column].max():
+                    self.errors[column].append('out_of_range')
+
+        # Develop a set of rules for cleaning the data
+        for column in self.errors:
+            for error in self.errors[column]:
+                if error == 'missing_value':
+                    self.cleaning_rules[error] = lambda x: x.fillna(method='ffill')
+                elif error == 'type_mismatch':
+                    self.cleaning_rules[error] = lambda x: x.astype(self.data_types[column])
+                elif error == 'typoglycemia':
+                    self.cleaning_rules[error] = lambda x: x.lower().replace(' ', '')
+                elif error == 'out_of_range':
+                    self.cleaning_rules[error] = lambda x: x.clip(min=self.data_types[column].min(), max=self.data_types[column].max())
+
+    def clean(self, dirty_data):
+        # Apply the cleaning rules to the dirty data
+        for column in dirty_data.columns:
+            if column in self.errors:
+                for error in self.errors[column]:
+                    dirty_data[column] = self.cleaning_rules[error](dirty_data[column])
+
+        return dirty_data
+
+# Example usage:
+
+cleaner = UniversalDataCleaner()
+
+# Train the cleaner on a dataset of clean and dirty data
+cleaner.train(clean_data, dirty_data)
+
+# Clean the dirty data
+clean_dirty_data = cleaner.clean(dirty_data)
+
+# Print the clean data
+print(clean_dirty_data)
