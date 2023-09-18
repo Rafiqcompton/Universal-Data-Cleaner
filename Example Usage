@@ -1,0 +1,20 @@
+import numpy as np
+import pandas as pd
+
+from universal_data_cleaner import UniversalDataCleaner
+
+# Load the clean and dirty data
+clean_data = pd.read_csv('clean_data.csv')
+dirty_data = pd.read_csv('dirty_data.csv')
+
+# Create a new instance of the UniversalDataCleaner class
+cleaner = UniversalDataCleaner()
+
+# Train the cleaner on the clean and dirty data
+cleaner.train(clean_data, dirty_data)
+
+# Clean the dirty data
+clean_dirty_data = cleaner.clean(dirty_data)
+
+# Save the clean data to a new CSV file
+clean_dirty_data.to_csv('clean_dirty_data.csv', index=False)
