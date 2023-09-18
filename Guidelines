@@ -1,0 +1,3 @@
+The algorithm needs to be trained on a dataset of clean and dirty data in order to learn how to identify and correct different types of errors.
+The algorithm can handle different data types, including strings, floats, and integers. However, it may not be able to handle more complex data types such as images or videos.
+The algorithm can be used to clean multiple columns in a dataset at the same time. However, it is important to note that the cleaning rules for each column may be different.
