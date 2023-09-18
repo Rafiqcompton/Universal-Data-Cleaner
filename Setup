@@ -1,0 +1,6 @@
+To use the algorithm, you will need to install the NumPy and Pandas libraries. You can do this using the following commands:
+
+pip install numpy
+pip install pandas
+
+Once the libraries are installed, you can create a new instance of the "UniversalDataCleaner" class and pass in the clean and dirty data as arguments.
